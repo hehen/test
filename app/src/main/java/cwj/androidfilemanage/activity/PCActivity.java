@@ -67,10 +67,10 @@ public class PCActivity extends BaseActivity {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
                 if (adapter.getItemViewType(position) == MultipleItem.FILE) {
-                    if(fileInfos.get(position).getMime().contains("video")||
-                            fileInfos.get(position).getMime().contains("audio")){
-                        FileMimeUtil.openNetVideo(PCActivity.this,fileInfos.get(position).getFilePath());
-                    }else{
+                    if (fileInfos.get(position).getMime().contains("video") ||
+                            fileInfos.get(position).getMime().contains("audio")) {
+                        FileMimeUtil.openNetVideo(PCActivity.this, fileInfos.get(position).getFilePath());
+                    } else {
 //                        Intent intent = new Intent(getActivity(), ImagePreviewActivity.class);
 //                        intent.putExtra("FileInfo", (ArrayList) mListphoto);
 //                        startActivity(intent);
@@ -119,13 +119,13 @@ public class PCActivity extends BaseActivity {
         if (path.equalsIgnoreCase(currentPath)) {
             finish();
         } else {
-            currentPath = currentPath.substring(0,currentPath.lastIndexOf(File.separator));
+            currentPath = currentPath.substring(0, currentPath.lastIndexOf(File.separator));
             showFiles(currentPath);
         }
     }
 
     @OnClick(R.id.iv_title_back)
     void iv_title_back() {
-       onBackPressed();
+        onBackPressed();
     }
 }
