@@ -242,6 +242,7 @@ public class FileUtil {
         fileInfo.setFileSize(file.length());
         fileInfo.setDirectory(file.isDirectory());
         fileInfo.setTime(FileUtil.getFileLastModifiedTime(file));
+        fileInfo.setMime(FileMimeUtil.getMIMEType(file));
         int lastDotIndex = file.getName().lastIndexOf(".");
         if (lastDotIndex > 0) {
             String fileSuffix = file.getName().substring(lastDotIndex + 1);

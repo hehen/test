@@ -28,6 +28,8 @@ public class FileInfo implements MultiItemEntity, Parcelable {
     public boolean isDirectory;
     String suffix;
     String time;
+    String mime;
+
     boolean isCheck = false;
     public boolean isPhoto = false;
 
@@ -96,6 +98,14 @@ public class FileInfo implements MultiItemEntity, Parcelable {
         this.isCheck = isCheck;
     }
 
+    public String getMime() {
+        return mime;
+    }
+
+    public void setMime(String mime) {
+        this.mime = mime;
+    }
+
     public FileInfo() {
 
     }
@@ -119,6 +129,7 @@ public class FileInfo implements MultiItemEntity, Parcelable {
         dest.writeByte(this.isDirectory ? (byte) 1 : (byte) 0);
         dest.writeString(this.suffix);
         dest.writeString(this.time);
+        dest.writeString(this.mime);
         dest.writeByte(this.isCheck ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isPhoto ? (byte) 1 : (byte) 0);
     }
@@ -138,20 +149,22 @@ public class FileInfo implements MultiItemEntity, Parcelable {
         this.isDirectory = in.readByte() != 0;
         this.suffix = in.readString();
         this.time = in.readString();
+        this.mime = in.readString();
         this.isCheck = in.readByte() != 0;
         this.isPhoto = in.readByte() != 0;
     }
 
-    @Generated(hash = 1746032003)
+    @Generated(hash = 1902068157)
     public FileInfo(String fileName, String filePath, long fileSize,
-            boolean isDirectory, String suffix, String time, boolean isCheck,
-            boolean isPhoto) {
+            boolean isDirectory, String suffix, String time, String mime,
+            boolean isCheck, boolean isPhoto) {
         this.fileName = fileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.isDirectory = isDirectory;
         this.suffix = suffix;
         this.time = time;
+        this.mime = mime;
         this.isCheck = isCheck;
         this.isPhoto = isPhoto;
     }
@@ -177,6 +190,7 @@ public class FileInfo implements MultiItemEntity, Parcelable {
                 ", isDirectory=" + isDirectory +
                 ", suffix='" + suffix + '\'' +
                 ", time='" + time + '\'' +
+                ", mime='" + mime + '\'' +
                 ", isCheck=" + isCheck +
                 ", isPhoto=" + isPhoto +
                 '}';

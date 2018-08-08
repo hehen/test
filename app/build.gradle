@@ -44,4 +44,9 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.github.chrisbanes:PhotoView:1.3.1'
+//    implementation project(':jiaozivideoplayer')
+//    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.4'
+//    implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.4'
+//    implementation 'com.danikula:videocache:2.7.0'
+//    implementation 'com.google.android.exoplayer:exoplayer:2.7.1'
 }

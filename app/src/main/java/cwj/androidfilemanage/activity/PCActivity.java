@@ -1,5 +1,6 @@
 package cwj.androidfilemanage.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import cwj.androidfilemanage.R;
 import cwj.androidfilemanage.adapter.MultipleItem;
 import cwj.androidfilemanage.adapter.MultipleItemQuickAdapter;
@@ -65,7 +67,15 @@ public class PCActivity extends BaseActivity {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
                 if (adapter.getItemViewType(position) == MultipleItem.FILE) {
-                    FileMimeUtil.openFile(PCActivity.this,fileInfos.get(position).getFilePath());
+                    if(fileInfos.get(position).getMime().contains("video")||
+                            fileInfos.get(position).getMime().contains("audio")){
+                        FileMimeUtil.openNetVideo(PCActivity.this,fileInfos.get(position).getFilePath());
+                    }else{
+//                        Intent intent = new Intent(getActivity(), ImagePreviewActivity.class);
+//                        intent.putExtra("FileInfo", (ArrayList) mListphoto);
+//                        startActivity(intent);
+                    }
+//                    FileMimeUtil.openFile(PCActivity.this,fileInfos.get(position).getFilePath());
                 } else {
                     showFiles(fileInfos.get(position).getFilePath());
                 }
@@ -106,11 +116,16 @@ public class PCActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (path.equals(currentPath)) {
+        if (path.equalsIgnoreCase(currentPath)) {
             finish();
         } else {
             currentPath = currentPath.substring(0,currentPath.lastIndexOf(File.separator));
             showFiles(currentPath);
         }
+    }
+
+    @OnClick(R.id.iv_title_back)
+    void iv_title_back() {
+       onBackPressed();
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
+import android.webkit.MimeTypeMap;
 
 import java.io.File;
 
@@ -86,7 +87,7 @@ public class FileMimeUtil {
     /**
      * 获取文件的类型。
      */
-    private static String getMIMEType(File file) {
+    public static String getMIMEType(File file) {
 
         String type = "*/*";
         String fName = file.getName();
@@ -132,4 +133,11 @@ public class FileMimeUtil {
         context.startActivity(intent);
     }
 
+    public static void openNetVideo(Context context,String url){
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        Intent mediaIntent = new Intent(Intent.ACTION_VIEW);
+        mediaIntent.setDataAndType(Uri.parse(url), mimeType);
+        context.startActivity(mediaIntent);
+    }
 }
