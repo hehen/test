@@ -2,6 +2,7 @@ package cwj.androidfilemanage.fragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import cwj.androidfilemanage.R;
 import cwj.androidfilemanage.activity.ImagePreviewActivity;
@@ -40,14 +43,12 @@ public class ImagePreviewFragment extends Fragment {
         View contentView = inflater.inflate(R.layout.fragment_image_preview, container, false);
         final ImageView preview_image = (ImageView) contentView.findViewById(R.id.preview_image);
         final PhotoViewAttacher mAttacher = new PhotoViewAttacher(preview_image);
-        Glide.with(this)
+        Glide.with(this).asBitmap()
                 .load(getArguments().getString(PATH))
-                .asBitmap()
-                .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .apply(new RequestOptions().fitCenter().diskCacheStrategy(DiskCacheStrategy.DATA))
                 .into(new SimpleTarget<Bitmap>(480, 800) {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         preview_image.setImageBitmap(resource);
                         mAttacher.update();
                     }

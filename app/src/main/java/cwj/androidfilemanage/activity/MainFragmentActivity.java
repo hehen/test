@@ -14,7 +14,7 @@ import com.tapadoo.alerter.Alerter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import cwj.androidfilemanage.R;
 import cwj.androidfilemanage.adapter.TabPagerAdapter;
 import cwj.androidfilemanage.base.BaseActivity;
@@ -27,13 +27,13 @@ import cwj.androidfilemanage.utils.FileUtil;
 public class MainFragmentActivity extends BaseActivity {
     private List<String> mTitleList = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
-    @Bind(R.id.main_viewpager)
+    @BindView(R.id.main_viewpager)
     ViewPager main_viewpager;
-    @Bind(R.id.main_top_rg)
+    @BindView(R.id.main_top_rg)
     RadioGroup main_top_rg;
-    @Bind(R.id.top_rg_a)
+    @BindView(R.id.top_rg_a)
     RadioButton top_rg_a;
-    @Bind(R.id.top_rg_b)
+    @BindView(R.id.top_rg_b)
     RadioButton top_rg_b;
 
     @Override

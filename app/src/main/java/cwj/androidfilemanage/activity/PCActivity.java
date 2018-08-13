@@ -1,41 +1,41 @@
 package cwj.androidfilemanage.activity;
 
-import android.content.Intent;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-
-import org.greenrobot.eventbus.EventBus;
+import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.callback.ProgressDialogCallBack;
+import com.zhouyou.http.exception.ApiException;
+import com.zhouyou.http.subsciber.IProgressDialog;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import cwj.androidfilemanage.R;
 import cwj.androidfilemanage.adapter.MultipleItem;
 import cwj.androidfilemanage.adapter.MultipleItemQuickAdapter;
 import cwj.androidfilemanage.base.BaseActivity;
 import cwj.androidfilemanage.bean.EventCenter;
-import cwj.androidfilemanage.bean.FileDao;
 import cwj.androidfilemanage.bean.FileInfo;
+import cwj.androidfilemanage.constant.ComParamContact;
 import cwj.androidfilemanage.utils.FileMimeUtil;
-import cwj.androidfilemanage.view.CheckBox;
 import cwj.androidfilemanage.view.DividerItemDecoration;
 
-import static cwj.androidfilemanage.utils.FileUtil.fileFilter;
-import static cwj.androidfilemanage.utils.FileUtil.getFileInfosFromFileArray;
-
 public class PCActivity extends BaseActivity {
-    @Bind(R.id.rlv_sd_card)
+    @BindView(R.id.rlv_sd_card)
     RecyclerView rlv_sd_card;
-    @Bind(R.id.tv_path)
+    @BindView(R.id.tv_path)
     TextView tv_path;
 
     private List<FileInfo> fileInfos = new ArrayList<>();
@@ -89,20 +89,44 @@ public class PCActivity extends BaseActivity {
         currentPath = folder;
         //获取文件信息
 //        fileInfos = getFileInfosFromFileArray(files);
-        if (fileInfos.size() == 0) {
-            mAdapter.setEmptyView(getEmptyView());
-            Log.e("files", "files::为空啦");
-        } else {
-
-            for (int i = 0; i < fileInfos.size(); i++) {
-                if (fileInfos.get(i).isDirectory) {
-                    mMultipleItems.add(new MultipleItem(MultipleItem.FOLD, fileInfos.get(i)));
-                } else {
-                    mMultipleItems.add(new MultipleItem(MultipleItem.FILE, fileInfos.get(i)));
-                }
+        IProgressDialog mProgressDialog = new IProgressDialog() {
+            @Override
+            public Dialog getDialog() {
+                ProgressDialog dialog = new ProgressDialog(PCActivity.this);
+                dialog.setMessage("登录中...");
+                return dialog;
             }
-        }
-        mAdapter.notifyDataSetChanged();
+        };
+        EasyHttp.post(ComParamContact.Login.PATH)
+                .params(ComParamContact.Login.ACCOUNT, folder)
+                .sign(true)
+                .timeStamp(true)
+                .execute(new ProgressDialogCallBack<List<FileInfo>>(mProgressDialog, true, true) {
+                    @Override
+                    public void onError(ApiException e) {
+                        super.onError(e);
+                        Toast.makeText(PCActivity.this, "失败！" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onSuccess(List<FileInfo> infos) {
+                        fileInfos.addAll(infos);
+                        if (fileInfos.size() == 0) {
+                            mAdapter.setEmptyView(getEmptyView());
+                            Log.e("files", "files::为空啦");
+                        } else {
+
+                            for (int i = 0; i < fileInfos.size(); i++) {
+                                if (fileInfos.get(i).isDirectory) {
+                                    mMultipleItems.add(new MultipleItem(MultipleItem.FOLD, fileInfos.get(i)));
+                                } else {
+                                    mMultipleItems.add(new MultipleItem(MultipleItem.FILE, fileInfos.get(i)));
+                                }
+                            }
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
     }
 
     private View getEmptyView() {

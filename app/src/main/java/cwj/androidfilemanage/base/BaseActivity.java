@@ -62,7 +62,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (this.isBindEventBusHere()) {
             EventBus.getDefault().unregister(this);
         }
-        ButterKnife.unbind(this);
     }
 
     @Subscribe

@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cwj.androidfilemanage.bean.EventCenter;
 
 
@@ -30,12 +31,14 @@ public abstract class BaseFragment extends Fragment {
      */
     private boolean isLoadDataCompleted;
 
+    Unbinder unbinder;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (null == rootView) {
             rootView = inflater.inflate(getLayoutResource(), container, false);
-            ButterKnife.bind(this, rootView);
+            unbinder = ButterKnife.bind(this, rootView);
         }
 
         isViewCreated = true;
@@ -86,7 +89,9 @@ public abstract class BaseFragment extends Fragment {
         if (null != rootView) {
             ((ViewGroup) rootView.getParent()).removeView(rootView);
         }
-        ButterKnife.unbind(this);
+        if(unbinder!=null) {
+            unbinder.unbind();
+        }
         if (this.isBindEventBusHere()) {
             EventBus.getDefault().unregister(this);
         }

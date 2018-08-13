@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
@@ -76,7 +77,7 @@ public class ExpandableItemAdapter extends BaseMultiItemQuickAdapter<MultiItemEn
                 if (isPhoto) {
                     Glide.with(mContext).load(f.getFilePath()).into((ImageView) helper.getView(R.id.iv_cover));
                 } else {
-                    Glide.with(mContext).load(FileUtil.getFileTypeImageId(mContext, f.getFilePath())).fitCenter().into((ImageView) helper.getView(R.id.iv_cover));
+                    Glide.with(mContext).load(FileUtil.getFileTypeImageId(mContext, f.getFilePath())).apply(new RequestOptions().fitCenter()).into((ImageView) helper.getView(R.id.iv_cover));
                 }
                 helper.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

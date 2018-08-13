@@ -20,11 +20,15 @@ import cwj.androidfilemanage.bean.EventCenter;
 import cwj.androidfilemanage.bean.FileInfo;
 import cwj.androidfilemanage.bean.SubItem;
 import cwj.androidfilemanage.utils.FileUtil;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by CWJ on 2017/3/21.
@@ -103,19 +107,19 @@ public class DocFragment extends BaseFragment {
         List<File> m = new ArrayList<>();
         m.add(new File(Environment.getExternalStorageDirectory() + "/tencent/"));
         m.add(new File(Environment.getExternalStorageDirectory() + "/dzsh/"));
-        Observable.from(m)
-                .flatMap(new Func1<File, Observable<File>>() {
+        Observable.fromIterable(m)
+                .flatMap(new Function<File, ObservableSource<File>>() {
                     @Override
-                    public Observable<File> call(File file) {
+                    public ObservableSource<File> apply(File file) {
                         return listFiles(file);
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Subscriber<File>() {
+                        new Observer<File>() {
                             @Override
-                            public void onCompleted() {
+                            public void onComplete(){
                                 progressDialog.dismiss();
                                 if (fileInfos.size() > 0) {
                                     SubItem wordItem = new SubItem("WORD");
@@ -154,6 +158,12 @@ public class DocFragment extends BaseFragment {
                                 progressDialog.dismiss();
                             }
 
+
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
                             @Override
                             public void onNext(File file) {
                                 FileInfo fileInfo = FileUtil.getFileInfoFromFile(file);
@@ -167,18 +177,21 @@ public class DocFragment extends BaseFragment {
 
     public static Observable<File> listFiles(final File f) {
         if (f.isDirectory()) {
-            return Observable.from(f.listFiles()).flatMap(new Func1<File, Observable<File>>() {
+            return Observable.fromArray(f.listFiles()).flatMap(new Function<File, ObservableSource<File>>() {
+
                 @Override
-                public Observable<File> call(File file) {
+                public ObservableSource<File> apply(File file) {
                     return listFiles(file);
                 }
             });
         } else {
-            return Observable.just(f).filter(new Func1<File, Boolean>() {
+            return Observable.just(f).filter(new Predicate<File>() {
                 @Override
-                public Boolean call(File file) {
+                public boolean test(File f) {
                     return f.exists() && f.canRead() && FileUtil.checkSuffix(f.getAbsolutePath(), new String[]{"doc", "docx", "dot", "xls", "pdf", "ppt", "pptx", "txt"});
+
                 }
+
             });
         }
     }

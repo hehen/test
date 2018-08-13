@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import cwj.androidfilemanage.R;
 import cwj.androidfilemanage.adapter.MultipleItem;
@@ -33,13 +33,13 @@ import static cwj.androidfilemanage.utils.FileUtil.fileFilter;
 import static cwj.androidfilemanage.utils.FileUtil.getFileInfosFromFileArray;
 
 public class SDCardActivity extends BaseActivity {
-    @Bind(R.id.rlv_sd_card)
+    @BindView(R.id.rlv_sd_card)
     RecyclerView rlv_sd_card;
-    @Bind(R.id.tv_path)
+    @BindView(R.id.tv_path)
     TextView tv_path;
-    @Bind(R.id.tv_all_size)
+    @BindView(R.id.tv_all_size)
     TextView tv_all_size;
-    @Bind(R.id.tv_send)
+    @BindView(R.id.tv_send)
     TextView tv_send;
     private List<FileInfo> fileInfos = new ArrayList<>();
     private List<MultipleItem> mMultipleItems = new ArrayList<>();
@@ -58,7 +58,7 @@ public class SDCardActivity extends BaseActivity {
         }
     }
 
-    @Bind(R.id.tv_title_middle)
+    @BindView(R.id.tv_title_middle)
     TextView tv_title_middle;
 
     @Override

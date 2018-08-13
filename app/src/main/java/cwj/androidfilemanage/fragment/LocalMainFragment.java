@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import cwj.androidfilemanage.R;
 import cwj.androidfilemanage.activity.ImagePreviewActivity;
@@ -32,17 +32,17 @@ import cwj.androidfilemanage.utils.SystemUtil;
  */
 
 public class LocalMainFragment extends BaseFragment {
-    @Bind(R.id.tl_myfile)
+    @BindView(R.id.tl_myfile)
     TabLayout mTabLayout;
-    @Bind(R.id.vp_myfile)
+    @BindView(R.id.vp_myfile)
     ViewPager mViewPager;
     private List<String> mTitleList = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
-    @Bind(R.id.tv_all_size)
+    @BindView(R.id.tv_all_size)
     TextView tv_all_size;
-    @Bind(R.id.tv_send)
+    @BindView(R.id.tv_send)
     TextView tv_send;
-    @Bind(R.id.tv_preview)
+    @BindView(R.id.tv_preview)
     TextView tv_preview;
     List<FileInfo> mListphoto = new ArrayList<>();
 

@@ -11,7 +11,7 @@ import com.tapadoo.alerter.Alerter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import cwj.androidfilemanage.R;
 import cwj.androidfilemanage.activity.PCActivity;
@@ -28,9 +28,9 @@ import cwj.androidfilemanage.utils.SystemUtil;
  */
 
 public class AllMainFragment extends BaseFragment {
-    @Bind(R.id.tv_all_size)
+    @BindView(R.id.tv_all_size)
     TextView tv_all_size;
-    @Bind(R.id.tv_send)
+    @BindView(R.id.tv_send)
     TextView tv_send;
 
 
