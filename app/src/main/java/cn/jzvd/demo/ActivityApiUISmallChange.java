@@ -15,6 +15,7 @@ import cn.jzvd.demo.CustomView.JZVideoPlayerStandardShowShareButtonAfterFullscre
 import cn.jzvd.demo.CustomView.JZVideoPlayerStandardShowTextureViewAfterAutoComplete;
 import cn.jzvd.demo.CustomView.JZVideoPlayerStandardShowTitleAfterFullscreen;
 import cn.jzvd.demo.CustomView.JZVideoPlayerStandardVolumeAfterFullscreen;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 16/7/31.

@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import cn.jzvd.JZVideoPlayerStandard;
-import cn.jzvd.demo.R;
+import cwj.androidfilemanage.R;
 
 public class JZVideoPlayerStandardMp3 extends JZVideoPlayerStandard {
 

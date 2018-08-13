@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import cn.jzvd.JZVideoPlayer;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 16/7/31.

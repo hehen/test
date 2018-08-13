@@ -8,6 +8,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import cn.jzvd.JZVideoPlayer;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 2017/10/22.

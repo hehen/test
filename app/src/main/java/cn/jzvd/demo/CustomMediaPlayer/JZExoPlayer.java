@@ -38,7 +38,7 @@ import cn.jzvd.JZMediaInterface;
 import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayerManager;
-import cn.jzvd.demo.R;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by MinhDV on 5/3/18.

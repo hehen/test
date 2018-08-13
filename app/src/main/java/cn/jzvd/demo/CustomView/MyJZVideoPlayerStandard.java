@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import cn.jzvd.JZVideoPlayerStandard;
-import cn.jzvd.demo.R;
+import cwj.androidfilemanage.R;
 
 /**
  * 这里可以监听到视频播放的生命周期和播放状态

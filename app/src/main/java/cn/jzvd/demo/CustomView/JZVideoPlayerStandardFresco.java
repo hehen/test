@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import cn.jzvd.JZVideoPlayerStandard;
-import cn.jzvd.demo.R;
+import cwj.androidfilemanage.R;
 
 //import com.facebook.drawee.view.SimpleDraweeView;
 

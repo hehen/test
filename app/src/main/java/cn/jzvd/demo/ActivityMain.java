@@ -15,6 +15,7 @@ import cn.jzvd.JZUserActionStandard;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
 import cn.jzvd.demo.CustomView.MyJZVideoPlayerStandard;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 16/7/22.

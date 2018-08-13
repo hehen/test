@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.jzvd.JZVideoPlayer;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen

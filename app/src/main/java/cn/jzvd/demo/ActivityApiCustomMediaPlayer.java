@@ -20,6 +20,7 @@ import cn.jzvd.JZVideoPlayerStandard;
 import cn.jzvd.demo.CustomMediaPlayer.CustomMediaPlayerAssertFolder;
 import cn.jzvd.demo.CustomMediaPlayer.JZExoPlayer;
 import cn.jzvd.demo.CustomMediaPlayer.JZMediaIjkplayer;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 2017/11/23.

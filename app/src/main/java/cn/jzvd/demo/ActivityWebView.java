@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 16/10/13.

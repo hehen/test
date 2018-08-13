@@ -12,6 +12,7 @@ import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by yujunkui on 16/8/29.

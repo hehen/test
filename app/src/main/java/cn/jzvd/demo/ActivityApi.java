@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
+import cwj.androidfilemanage.R;
+import cwj.androidfilemanage.base.BaseApplication;
 
 /**
  * Created by Nathen on 16/7/31.
@@ -61,7 +63,7 @@ public class ActivityApi extends AppCompatActivity implements View.OnClickListen
         mJzVideoPlayerStandard = findViewById(R.id.jz_video);
         LinkedHashMap map = new LinkedHashMap();
 
-        String proxyUrl = ApplicationDemo.getProxy(this).getProxyUrl(VideoConstant.videoUrls[0][9]);
+        String proxyUrl = BaseApplication.getProxy(this).getProxyUrl(VideoConstant.videoUrls[0][9]);
 
         map.put("高清", proxyUrl);
         map.put("标清", VideoConstant.videoUrls[0][6]);

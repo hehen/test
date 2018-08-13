@@ -10,6 +10,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import cn.jzvd.JZVideoPlayer;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 16/7/31.

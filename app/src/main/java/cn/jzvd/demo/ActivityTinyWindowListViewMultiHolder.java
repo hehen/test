@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 2017/10/31.

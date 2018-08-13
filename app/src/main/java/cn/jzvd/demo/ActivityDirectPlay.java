@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 16/7/31.

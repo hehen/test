@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import cn.jzvd.JZVideoPlayer;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen on 2017/11/1.

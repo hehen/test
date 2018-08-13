@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import cn.jzvd.JZVideoPlayerStandard;
-import cn.jzvd.demo.R;
+import cwj.androidfilemanage.R;
 
 /**
  * Created by Nathen
