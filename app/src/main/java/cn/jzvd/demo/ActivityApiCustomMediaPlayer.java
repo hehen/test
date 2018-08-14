@@ -19,7 +19,7 @@ import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
 import cn.jzvd.demo.CustomMediaPlayer.CustomMediaPlayerAssertFolder;
 import cn.jzvd.demo.CustomMediaPlayer.JZExoPlayer;
-import cn.jzvd.demo.CustomMediaPlayer.JZMediaIjkplayer;
+//import cn.jzvd.demo.CustomMediaPlayer.JZMediaIjkplayer;
 import cwj.androidfilemanage.R;
 
 /**
@@ -71,15 +71,15 @@ public class ActivityApiCustomMediaPlayer extends AppCompatActivity implements V
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.change_to_ijkplayer:
-                JZVideoPlayer.releaseAllVideos();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        JZVideoPlayer.setMediaInterface(new JZMediaIjkplayer());
-                    }
-                }, 1000);
-                Toast.makeText(ActivityApiCustomMediaPlayer.this, "Change to Ijkplayer", Toast.LENGTH_SHORT).show();
-                finish();
+//                JZVideoPlayer.releaseAllVideos();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        JZVideoPlayer.setMediaInterface(new JZMediaIjkplayer());
+//                    }
+//                }, 1000);
+//                Toast.makeText(ActivityApiCustomMediaPlayer.this, "Change to Ijkplayer", Toast.LENGTH_SHORT).show();
+//                finish();
                 break;
             case R.id.change_to_system_mediaplayer:
                 JZVideoPlayer.releaseAllVideos();

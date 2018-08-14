@@ -44,4 +44,9 @@ public class ComParamContact {
         public final static String ACCOUNT = "account";
         public final static String PASSWORD = "password";
     }
+
+    public final static class PC {
+        public final static String PATH = "/v1/pc/root";
+        public final static String DIR = "dir";
+    }
 }

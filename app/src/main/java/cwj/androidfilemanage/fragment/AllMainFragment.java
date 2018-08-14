@@ -13,6 +13,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.jzvd.demo.ActivityMain;
 import cwj.androidfilemanage.R;
 import cwj.androidfilemanage.activity.PCActivity;
 import cwj.androidfilemanage.activity.SDCardActivity;
@@ -20,6 +21,7 @@ import cwj.androidfilemanage.base.BaseFragment;
 import cwj.androidfilemanage.bean.EventCenter;
 import cwj.androidfilemanage.bean.FileDao;
 import cwj.androidfilemanage.bean.FileInfo;
+import cwj.androidfilemanage.constant.MediaConstant;
 import cwj.androidfilemanage.utils.FileUtil;
 import cwj.androidfilemanage.utils.SystemUtil;
 
@@ -88,6 +90,12 @@ public class AllMainFragment extends BaseFragment {
         bundle.putString("path", Environment.getExternalStorageDirectory().getAbsolutePath());
         bundle.putString("name", "PC");
         intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.rl_test)
+    void rl_test(){
+        Intent intent = new Intent(getActivity(), ActivityMain.class);
         startActivity(intent);
     }
 

@@ -2,6 +2,7 @@ package cwj.androidfilemanage.activity;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.jzvd.demo.ActivityMain;
 import cwj.androidfilemanage.R;
 import cwj.androidfilemanage.adapter.MultipleItem;
 import cwj.androidfilemanage.adapter.MultipleItemQuickAdapter;
@@ -29,6 +31,7 @@ import cwj.androidfilemanage.base.BaseActivity;
 import cwj.androidfilemanage.bean.EventCenter;
 import cwj.androidfilemanage.bean.FileInfo;
 import cwj.androidfilemanage.constant.ComParamContact;
+import cwj.androidfilemanage.constant.MediaConstant;
 import cwj.androidfilemanage.utils.FileMimeUtil;
 import cwj.androidfilemanage.view.DividerItemDecoration;
 
@@ -69,7 +72,10 @@ public class PCActivity extends BaseActivity {
                 if (adapter.getItemViewType(position) == MultipleItem.FILE) {
                     if (fileInfos.get(position).getMime().contains("video") ||
                             fileInfos.get(position).getMime().contains("audio")) {
-                        FileMimeUtil.openNetVideo(PCActivity.this, fileInfos.get(position).getFilePath());
+                        Intent intent = new Intent(PCActivity.this, ActivityMain.class);
+                        intent.putExtra(ActivityMain.PLAY_PATH,fileInfos.get(position).getFilePath());
+                        startActivity(intent);
+//                        FileMimeUtil.openNetVideo(PCActivity.this, fileInfos.get(position).getFilePath());
                     } else {
 //                        Intent intent = new Intent(getActivity(), ImagePreviewActivity.class);
 //                        intent.putExtra("FileInfo", (ArrayList) mListphoto);
@@ -93,14 +99,14 @@ public class PCActivity extends BaseActivity {
             @Override
             public Dialog getDialog() {
                 ProgressDialog dialog = new ProgressDialog(PCActivity.this);
-                dialog.setMessage("登录中...");
+                dialog.setMessage("请求中...");
                 return dialog;
             }
         };
-        EasyHttp.post(ComParamContact.Login.PATH)
-                .params(ComParamContact.Login.ACCOUNT, folder)
-                .sign(true)
-                .timeStamp(true)
+        EasyHttp.post(ComParamContact.PC.PATH)
+                .params(ComParamContact.PC.DIR, folder)
+//                .sign(true)
+//                .timeStamp(true)
                 .execute(new ProgressDialogCallBack<List<FileInfo>>(mProgressDialog, true, true) {
                     @Override
                     public void onError(ApiException e) {
@@ -110,6 +116,7 @@ public class PCActivity extends BaseActivity {
 
                     @Override
                     public void onSuccess(List<FileInfo> infos) {
+                        fileInfos.clear();
                         fileInfos.addAll(infos);
                         if (fileInfos.size() == 0) {
                             mAdapter.setEmptyView(getEmptyView());

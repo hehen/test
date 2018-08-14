@@ -16,12 +16,13 @@ import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
 import cn.jzvd.demo.CustomView.MyJZVideoPlayerStandard;
 import cwj.androidfilemanage.R;
+import cwj.androidfilemanage.utils.StringUtils;
 
 /**
  * Created by Nathen on 16/7/22.
  */
 public class ActivityMain extends AppCompatActivity implements View.OnClickListener {
-
+    public static final String PLAY_PATH = "PLAY_PATH";
 
     MyJZVideoPlayerStandard myJZVideoPlayerStandard;
 
@@ -45,8 +46,13 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
         mWebView.setOnClickListener(this);
 
         myJZVideoPlayerStandard = findViewById(R.id.jz_video);
-        myJZVideoPlayerStandard.setUp("http://jzvd.nathen.cn/342a5f7ef6124a4a8faf00e738b8bee4/cf6d9db0bd4d41f59d09ea0a81e918fd-5287d2089db37e62345123a1be272f8b.mp4"
-                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "饺子快长大");
+        if (!StringUtils.isEmpty(getIntent().getStringExtra(PLAY_PATH))) {
+            myJZVideoPlayerStandard.setUp(getIntent().getStringExtra(PLAY_PATH)
+                    , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "饺子快长大");
+        } else {
+            myJZVideoPlayerStandard.setUp("http://jzvd.nathen.cn/342a5f7ef6124a4a8faf00e738b8bee4/cf6d9db0bd4d41f59d09ea0a81e918fd-5287d2089db37e62345123a1be272f8b.mp4"
+                    , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "饺子快长大");
+        }
         Glide.with(this).load("http://jzvd-pic.nathen.cn/jzvd-pic/1bb2ebbe-140d-4e2e-abd2-9e7e564f71ac.png").into(myJZVideoPlayerStandard.thumbImageView);
         JZVideoPlayer.setJzUserAction(new MyUserActionStandard());
     }
