@@ -21,7 +21,9 @@ import cwj.androidfilemanage.interceptor.CustomSignInterceptor;
 import cwj.androidfilemanage.utils.SystemInfoUtils;
 
 /**
- * Created by CWJ on 2017/3/20.
+ *
+ * @author wenlu
+ * @date 2017/3/20
  */
 
 public class BaseApplication extends Application {
@@ -50,19 +52,30 @@ public class BaseApplication extends Application {
                 .setReadTimeOut(60 * 1000)
                 .setWriteTimeOut(60 * 1000)
                 .setConnectTimeout(60 * 1000)
-                .setRetryCount(3)//默认网络不好自动重试3次
-                .setRetryDelay(500)//每次延时500ms重试
-                .setRetryIncreaseDelay(500)//每次延时叠加500ms
+                //默认网络不好自动重试3次
+                .setRetryCount(3)
+                //每次延时500ms重试
+                .setRetryDelay(500)
+                //每次延时叠加500ms
+                .setRetryIncreaseDelay(500)
                 .setBaseUrl(Url)
-                .setCacheDiskConverter(new SerializableDiskConverter())//默认缓存使用序列化转化
-                .setCacheMaxSize(50 * 1024 * 1024)//设置缓存大小为50M
-                .setCacheVersion(1)//缓存版本为1
-                .setHostnameVerifier(new UnSafeHostnameVerifier(Url))//全局访问规则
-                .setCertificates()//信任所有证书
+                //默认缓存使用序列化转化
+                .setCacheDiskConverter(new SerializableDiskConverter())
+                //设置缓存大小为50M
+                .setCacheMaxSize(50 * 1024 * 1024)
+                //缓存版本为1
+                .setCacheVersion(1)
+                //全局访问规则
+                .setHostnameVerifier(new UnSafeHostnameVerifier(Url))
+                //信任所有证书
+                .setCertificates()
                 //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
-                .addCommonHeaders(headers)//设置全局公共头
-                .addCommonParams(params)//设置全局公共参数
-                .addInterceptor(new CustomSignInterceptor());//添加参数签名拦截器
+                //设置全局公共头
+                .addCommonHeaders(headers)
+                //设置全局公共参数
+                .addCommonParams(params)
+                //添加参数签名拦截器
+                .addInterceptor(new CustomSignInterceptor());
         //.addInterceptor(new HeTInterceptor());//处理自己业务的拦截器
 
 
@@ -79,9 +92,7 @@ public class BaseApplication extends Application {
         @Override
         public boolean verify(String hostname, SSLSession session) {
             HttpLog.i("############### verify " + hostname + " " + this.host);
-            if (this.host == null || "".equals(this.host) || !this.host.contains(hostname))
-                return false;
-            return true;
+            return this.host != null && !"".equals(this.host) && this.host.contains(hostname);
         }
     }
 
@@ -108,8 +119,9 @@ public class BaseApplication extends Application {
      * 获取Application的Context
      **/
     public static Context getAppContext() {
-        if (app == null)
+        if (app == null) {
             return null;
+        }
         return app.getApplicationContext();
     }
 

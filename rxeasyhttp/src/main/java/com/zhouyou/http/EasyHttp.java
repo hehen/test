@@ -73,14 +73,19 @@ import retrofit2.Retrofit;
  * 9.支持okhttp相关参数，包括拦截器</br>
  * 10.支持Retrofit相关参数</br>
  * 11.支持Cookie管理</br>
- * 作者： zhouyou<br>
- * 日期： 2017/4/25 15:25 <br>
- * 版本： v1.0<br>
+ *
+ * @author wenlu
  */
 public final class EasyHttp {
     private static Application sContext;
-    public static final int DEFAULT_MILLISECONDS = 60000;             //默认的超时时间
-    private static final int DEFAULT_RETRY_COUNT = 3;                 //默认重试次数
+    /**
+     * 默认的超时时间
+     */
+    public static final int DEFAULT_MILLISECONDS = 60000;
+    /**
+     * 默认重试次数
+     */
+    private static final int DEFAULT_RETRY_COUNT = 3;
     private static final int DEFAULT_RETRY_INCREASEDELAY = 0;         //默认重试叠加时间
     private static final int DEFAULT_RETRY_DELAY = 500;               //默认重试延时
     public static final int DEFAULT_CACHE_NEVER_EXPIRE = -1;          //缓存过期时间，默认永久缓存
@@ -90,19 +95,29 @@ public final class EasyHttp {
     private File mCacheDirectory;                                     //缓存目录
     private long mCacheMaxSize;                                       //缓存大小
     private String mBaseUrl;                                          //全局BaseUrl
-    private int mRetryCount = DEFAULT_RETRY_COUNT;                    //重试次数默认3次
+    /**
+     * 重试次数默认3次
+     */
+    private int mRetryCount = DEFAULT_RETRY_COUNT;
     private int mRetryDelay = DEFAULT_RETRY_DELAY;                    //延迟xxms重试
     private int mRetryIncreaseDelay = DEFAULT_RETRY_INCREASEDELAY;    //叠加延迟
     private HttpHeaders mCommonHeaders;                               //全局公共请求头
     private HttpParams mCommonParams;                                 //全局公共请求参数
-    private OkHttpClient.Builder okHttpClientBuilder;                 //okhttp请求的客户端
-    private Retrofit.Builder retrofitBuilder;                         //Retrofit请求Builder
+    /**
+     * OkHttp请求的客户端
+     */
+    private OkHttpClient.Builder okHttpClientBuilder;
+    /**
+     * Retrofit请求Builder
+     */
+    private Retrofit.Builder retrofitBuilder;
     private RxCache.Builder rxCacheBuilder;                           //RxCache请求的Builder
     private CookieManger cookieJar;                                   //Cookie管理
     private volatile static EasyHttp singleton = null;
 
     private EasyHttp() {
         okHttpClientBuilder = new OkHttpClient.Builder();
+        //TODO SSL默认允许所有连接
         okHttpClientBuilder.hostnameVerifier(new DefaultHostnameVerifier());
         okHttpClientBuilder.connectTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);
         okHttpClientBuilder.readTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);
@@ -112,6 +127,11 @@ public final class EasyHttp {
                 .diskConverter(new SerializableDiskConverter());      //目前只支持Serializable和Gson缓存其它可以自己扩展
     }
 
+    /**
+     * 获取网络框架单例
+     *
+     * @return 框架单例
+     */
     public static EasyHttp getInstance() {
         testInitialize();
         if (singleton == null) {
@@ -139,9 +159,13 @@ public final class EasyHttp {
         return sContext;
     }
 
+    /**
+     * 检查是否初始化
+     */
     private static void testInitialize() {
-        if (sContext == null)
+        if (sContext == null) {
             throw new ExceptionInInitializerError("请先在全局Application中调用 EasyHttp.init() 初始化！");
+        }
     }
 
     public static OkHttpClient getOkHttpClient() {
@@ -191,9 +215,9 @@ public final class EasyHttp {
      * 并不是框架错误,如果不想每次打印,这里可以关闭异常显示
      */
     public EasyHttp debug(String tag, boolean isPrintException) {
-        String tempTag = TextUtils.isEmpty(tag)?"RxEasyHttp_":tag;
-        if(isPrintException){
-            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(tempTag, isPrintException);
+        String tempTag = TextUtils.isEmpty(tag) ? "RxEasyHttp_" : tag;
+        if (isPrintException) {
+            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(tempTag);
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             okHttpClientBuilder.addInterceptor(loggingInterceptor);
         }
@@ -287,7 +311,9 @@ public final class EasyHttp {
      * 超时重试次数
      */
     public EasyHttp setRetryCount(int retryCount) {
-        if (retryCount < 0) throw new IllegalArgumentException("retryCount must > 0");
+        if (retryCount < 0) {
+            throw new IllegalArgumentException("retryCount must > 0");
+        }
         mRetryCount = retryCount;
         return this;
     }
@@ -303,7 +329,9 @@ public final class EasyHttp {
      * 超时重试延迟时间
      */
     public EasyHttp setRetryDelay(int retryDelay) {
-        if (retryDelay < 0) throw new IllegalArgumentException("retryDelay must > 0");
+        if (retryDelay < 0) {
+            throw new IllegalArgumentException("retryDelay must > 0");
+        }
         mRetryDelay = retryDelay;
         return this;
     }
@@ -319,8 +347,9 @@ public final class EasyHttp {
      * 超时重试延迟叠加时间
      */
     public EasyHttp setRetryIncreaseDelay(int retryIncreaseDelay) {
-        if (retryIncreaseDelay < 0)
+        if (retryIncreaseDelay < 0) {
             throw new IllegalArgumentException("retryIncreaseDelay must > 0");
+        }
         mRetryIncreaseDelay = retryIncreaseDelay;
         return this;
     }
@@ -382,8 +411,9 @@ public final class EasyHttp {
      * 全局设置缓存的版本，默认为1，缓存的版本号
      */
     public EasyHttp setCacheVersion(int cacheersion) {
-        if (cacheersion < 0)
+        if (cacheersion < 0) {
             throw new IllegalArgumentException("cacheersion must > 0");
+        }
         rxCacheBuilder.appVersion(cacheersion);
         return this;
     }
@@ -431,7 +461,9 @@ public final class EasyHttp {
      * 添加全局公共请求参数
      */
     public EasyHttp addCommonParams(HttpParams commonParams) {
-        if (mCommonParams == null) mCommonParams = new HttpParams();
+        if (mCommonParams == null) {
+            mCommonParams = new HttpParams();
+        }
         mCommonParams.put(commonParams);
         return this;
     }
@@ -454,7 +486,9 @@ public final class EasyHttp {
      * 添加全局公共请求参数
      */
     public EasyHttp addCommonHeaders(HttpHeaders commonHeaders) {
-        if (mCommonHeaders == null) mCommonHeaders = new HttpHeaders();
+        if (mCommonHeaders == null) {
+            mCommonHeaders = new HttpHeaders();
+        }
         mCommonHeaders.put(commonHeaders);
         return this;
     }
@@ -623,7 +657,7 @@ public final class EasyHttp {
         }, new Consumer<Throwable>() {
             @Override
             public void accept(@NonNull Throwable throwable) throws Exception {
-                    HttpLog.i("removeCache err!!!");
+                throwable.printStackTrace();
             }
         });
     }

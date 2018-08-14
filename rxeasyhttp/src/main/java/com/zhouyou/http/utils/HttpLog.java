@@ -74,7 +74,9 @@ public class HttpLog {
     }
 
     public static void d(String content) {
-        if (!allowD) return;
+        if (!allowD) {
+            return;
+        }
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
 
@@ -90,7 +92,9 @@ public class HttpLog {
     }
 
     public static void d(String content, Throwable tr) {
-        if (!allowD) return;
+        if (!allowD) {
+            return;
+        }
         StackTraceElement caller = getCallerStackTraceElement();
         String tag = generateTag(caller);
 
