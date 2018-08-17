@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.HttpManager;
 import com.zhouyou.http.callback.ProgressDialogCallBack;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.subsciber.IProgressDialog;
@@ -31,8 +31,6 @@ import cwj.androidfilemanage.base.BaseActivity;
 import cwj.androidfilemanage.bean.EventCenter;
 import cwj.androidfilemanage.bean.FileInfo;
 import cwj.androidfilemanage.constant.ComParamContact;
-import cwj.androidfilemanage.constant.MediaConstant;
-import cwj.androidfilemanage.utils.FileMimeUtil;
 import cwj.androidfilemanage.view.DividerItemDecoration;
 
 public class PCActivity extends BaseActivity {
@@ -103,7 +101,7 @@ public class PCActivity extends BaseActivity {
                 return dialog;
             }
         };
-        EasyHttp.post(ComParamContact.PC.PATH)
+        HttpManager.post(ComParamContact.PC.PATH)
                 .params(ComParamContact.PC.DIR, folder)
 //                .sign(true)
 //                .timeStamp(true)

@@ -40,9 +40,7 @@ import okhttp3.ResponseBody;
 
 /**
  * <p>描述：get请求</p>
- * 作者： zhouyou<br>
- * 日期： 2017/4/28 14:28 <br>
- * 版本： v1.0<br>
+ * @author Administrator
  */
 @SuppressWarnings(value={"unchecked", "deprecation"})
 public class GetRequest extends BaseRequest<GetRequest> {

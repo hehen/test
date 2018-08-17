@@ -75,13 +75,13 @@ public class RxUtil {
                         .map(new HandleFuc<T>())
                         .doOnSubscribe(new Consumer<Disposable>() {
                             @Override
-                            public void accept(@NonNull Disposable disposable) throws Exception {
+                            public void accept(@NonNull Disposable disposable) {
                                 HttpLog.i("+++doOnSubscribe+++" + disposable.isDisposed());
                             }
                         })
                         .doFinally(new Action() {
                             @Override
-                            public void run() throws Exception {
+                            public void run() {
                                 HttpLog.i("+++doFinally+++");
                             }
                         })

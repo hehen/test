@@ -59,12 +59,16 @@ public abstract class ProgressDialogCallBack<T> extends CallBack<T> implements P
     /**
      * 初始化
      *
-     * @param isCancel
+     * @param isCancel 进度条是否可以取消
      */
     private void init(boolean isCancel) {
-        if (progressDialog == null) return;
+        if (progressDialog == null) {
+            return;
+        }
         mDialog = progressDialog.getDialog();
-        if (mDialog == null) return;
+        if (mDialog == null) {
+            return;
+        }
         mDialog.setCancelable(isCancel);
         if (isCancel) {
             mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {

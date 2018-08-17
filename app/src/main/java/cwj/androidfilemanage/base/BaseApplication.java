@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.HttpManager;
+import com.zhouyou.http.HttpCacheConfig;
+import com.zhouyou.http.HttpConfig;
 import com.zhouyou.http.cache.converter.SerializableDiskConverter;
 import com.zhouyou.http.model.HttpHeaders;
 import com.zhouyou.http.model.HttpParams;
@@ -35,7 +37,6 @@ public class BaseApplication extends Application {
         app = this;
         //配置数据库
         setupDatabase();
-        EasyHttp.init(this);
 
         //这里涉及到安全我把url去掉了，demo都是调试通的
         String Url = "http://www.xxx.com";
@@ -47,8 +48,9 @@ public class BaseApplication extends Application {
         //设置请求参数
         HttpParams params = new HttpParams();
         params.put("appId", AppConstant.APPID);
-        EasyHttp.getInstance()
-                .debug("RxEasyHttp", true)
+
+        HttpConfig httpConfig = new HttpConfig()
+                .setBaseUrl(Url)
                 .setReadTimeOut(60 * 1000)
                 .setWriteTimeOut(60 * 1000)
                 .setConnectTimeout(60 * 1000)
@@ -58,24 +60,30 @@ public class BaseApplication extends Application {
                 .setRetryDelay(500)
                 //每次延时叠加500ms
                 .setRetryIncreaseDelay(500)
-                .setBaseUrl(Url)
+                //信任所有证书
+                .setCertificates()
+                //全局访问规则
+                .setHostnameVerifier(new UnSafeHostnameVerifier(Url));
+        HttpCacheConfig httpCacheConfig = new HttpCacheConfig()
                 //默认缓存使用序列化转化
                 .setCacheDiskConverter(new SerializableDiskConverter())
                 //设置缓存大小为50M
                 .setCacheMaxSize(50 * 1024 * 1024)
                 //缓存版本为1
-                .setCacheVersion(1)
-                //全局访问规则
-                .setHostnameVerifier(new UnSafeHostnameVerifier(Url))
-                //信任所有证书
-                .setCertificates()
-                //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
+                .setCacheVersion(1);
+
+        HttpManager.init(this);
+        HttpManager.getInstance()
+                .debug("RxEasyHttp", true)
+                .setHttpConfig(httpConfig)
+                .setHttpCacheConfig(httpCacheConfig)
                 //设置全局公共头
                 .addCommonHeaders(headers)
                 //设置全局公共参数
                 .addCommonParams(params)
                 //添加参数签名拦截器
-                .addInterceptor(new CustomSignInterceptor());
+                .getHttpClient().getOkHttpClientBuilder().addInterceptor(new CustomSignInterceptor());
+        //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
         //.addInterceptor(new HeTInterceptor());//处理自己业务的拦截器
 
 

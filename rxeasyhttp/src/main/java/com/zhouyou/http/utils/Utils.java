@@ -119,27 +119,29 @@ public class Utils {
      */
     public static <T> List<Type> getMethodTypes(Class<T> cls) {
         Type typeOri = cls.getGenericSuperclass();
-        List<Type> needtypes = null;
+        List<Type> needTypes = null;
         // if Type is T
         if (typeOri instanceof ParameterizedType) {
-            needtypes = new ArrayList<>();
-            Type[] parentypes = ((ParameterizedType) typeOri).getActualTypeArguments();
-            for (Type childtype : parentypes) {
-                needtypes.add(childtype);
-                if (childtype instanceof ParameterizedType) {
-                    Type[] childtypes = ((ParameterizedType) childtype).getActualTypeArguments();
-                    Collections.addAll(needtypes, childtypes);
+            needTypes = new ArrayList<>();
+            Type[] parenTypes = ((ParameterizedType) typeOri).getActualTypeArguments();
+            for (Type childType : parenTypes) {
+                needTypes.add(childType);
+                if (childType instanceof ParameterizedType) {
+                    Type[] childTypes = ((ParameterizedType) childType).getActualTypeArguments();
+                    Collections.addAll(needTypes, childTypes);
                 }
             }
         }
-        return needtypes;
+        return needTypes;
     }
 
     public static Class getClass(Type type, int i) {
-        if (type instanceof ParameterizedType) { // 处理泛型类型     
+        // 处理泛型类型
+        if (type instanceof ParameterizedType) {
             return getGenericClass((ParameterizedType) type, i);
         } else if (type instanceof TypeVariable) {
-            return getClass(((TypeVariable) type).getBounds()[0], 0); // 处理泛型擦拭对象     
+            // 处理泛型擦拭对象
+            return getClass(((TypeVariable) type).getBounds()[0], 0);
         } else {// class本身也是type，强制转型     
             return (Class) type;
         }
@@ -168,11 +170,14 @@ public class Utils {
 
     public static Class getGenericClass(ParameterizedType parameterizedType, int i) {
         Type genericClass = parameterizedType.getActualTypeArguments()[i];
-        if (genericClass instanceof ParameterizedType) { // 处理多级泛型     
+        // 处理多级泛型
+        if (genericClass instanceof ParameterizedType) {
             return (Class) ((ParameterizedType) genericClass).getRawType();
-        } else if (genericClass instanceof GenericArrayType) { // 处理数组泛型     
+        // 处理数组泛型
+        } else if (genericClass instanceof GenericArrayType) {
             return (Class) ((GenericArrayType) genericClass).getGenericComponentType();
-        } else if (genericClass instanceof TypeVariable) { // 处理泛型擦拭对象     
+        // 处理泛型擦拭对象
+        } else if (genericClass instanceof TypeVariable) {
             return getClass(((TypeVariable) genericClass).getBounds()[0], 0);
         } else {
             return (Class) genericClass;
@@ -181,11 +186,14 @@ public class Utils {
 
     public static Type getGenericType(ParameterizedType parameterizedType, int i) {
         Type genericType = parameterizedType.getActualTypeArguments()[i];
-        if (genericType instanceof ParameterizedType) { // 处理多级泛型     
+        // 处理多级泛型
+        if (genericType instanceof ParameterizedType) {
             return ((ParameterizedType) genericType).getRawType();
-        } else if (genericType instanceof GenericArrayType) { // 处理数组泛型     
+        // 处理数组泛型
+        } else if (genericType instanceof GenericArrayType) {
             return ((GenericArrayType) genericType).getGenericComponentType();
-        } else if (genericType instanceof TypeVariable) { // 处理泛型擦拭对象     
+        // 处理泛型擦拭对象
+        } else if (genericType instanceof TypeVariable) {
             return getClass(((TypeVariable) genericType).getBounds()[0], 0);
         } else {
             return genericType;
@@ -216,8 +224,11 @@ public class Utils {
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
         Type type = params[0];
         Type finalNeedType;
-        if (params.length > 1) {//这个类似是：CacheResult<SkinTestResult> 2层
-            if (!(type instanceof ParameterizedType)) throw new IllegalStateException("没有填写泛型参数");
+        //这个类似是：CacheResult<SkinTestResult> 2层
+        if (params.length > 1) {
+            if (!(type instanceof ParameterizedType)) {
+                throw new IllegalStateException("没有填写泛型参数");
+            }
             finalNeedType = ((ParameterizedType) type).getActualTypeArguments()[0];
             //Type rawType = ((ParameterizedType) type).getRawType();
         } else {//这个类似是:SkinTestResult  1层

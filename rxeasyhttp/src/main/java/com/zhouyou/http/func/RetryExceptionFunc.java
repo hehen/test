@@ -31,6 +31,9 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
+import static com.zhouyou.http.constant.ErrorEnum.NETWORK_ERROR;
+import static com.zhouyou.http.constant.ErrorEnum.TIMEOUT_ERROR;
+
 /**
  * <p>描述：网络请求错误重试条件</p>
  * 作者： zhouyou<br>
@@ -70,8 +73,9 @@ public class RetryExceptionFunc implements Function<Observable<? extends Throwab
         }).flatMap(new Function<Wrapper, ObservableSource<?>>() {
             @Override
             public ObservableSource<?> apply(@NonNull Wrapper wrapper) throws Exception {
-                if (wrapper.index > 1)
+                if (wrapper.index > 1) {
                     HttpLog.i("重试次数：" + (wrapper.index));
+                }
                 int errCode = 0;
                 if (wrapper.throwable instanceof ApiException) {
                     ApiException exception = (ApiException) wrapper.throwable;
@@ -79,13 +83,16 @@ public class RetryExceptionFunc implements Function<Observable<? extends Throwab
                 }
                 if ((wrapper.throwable instanceof ConnectException
                         || wrapper.throwable instanceof SocketTimeoutException
-                        || errCode == ApiException.ERROR.NETWORD_ERROR
-                        || errCode == ApiException.ERROR.TIMEOUT_ERROR
+                        || errCode == NETWORK_ERROR.getCode()
+                        || errCode == TIMEOUT_ERROR.getCode()
                         || wrapper.throwable instanceof SocketTimeoutException
-                        || wrapper.throwable instanceof TimeoutException)
-                        && wrapper.index < count + 1) { //如果超出重试次数也抛出错误，否则默认是会进入onCompleted
-                    return Observable.timer(delay + (wrapper.index - 1) * increaseDelay, TimeUnit.MILLISECONDS);
+                        || wrapper.throwable instanceof TimeoutException))
+                //如果超出重试次数也抛出错误，否则默认是会进入onCompleted
+                {
+                    if (wrapper.index < count + 1) {
+                        return Observable.timer(delay + (wrapper.index - 1) * increaseDelay, TimeUnit.MILLISECONDS);
 
+                    }
                 }
                 return Observable.error(wrapper.throwable);
             }

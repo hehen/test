@@ -31,12 +31,11 @@ import okhttp3.ResponseBody;
 /**
  * <p>描述：提供回调代理</p>
  * 主要用于可以自定义ApiResult<br>
- * 作者： zhouyou<br>
- * 日期： 2017/5/16 17:59 <br>
- * 版本： v1.0<br>
+ *
+ * @author Administrator
  */
 public abstract class CallBackProxy<T extends ApiResult<R>, R> implements IType<T> {
-    CallBack<R> mCallBack;
+    private CallBack<R> mCallBack;
 
     public CallBackProxy(CallBack<R> callBack) {
         mCallBack = callBack;
@@ -46,11 +45,17 @@ public abstract class CallBackProxy<T extends ApiResult<R>, R> implements IType<
         return mCallBack;
     }
 
+    /**
+     * CallBack代理方式，获取需要解析的Type
+     *
+     * @return 需要解析的Type
+     */
     @Override
-    public Type getType() {//CallBack代理方式，获取需要解析的Type
+    public Type getType() {
         Type typeArguments = null;
         if (mCallBack != null) {
-            Type rawType = mCallBack.getRawType();//如果用户的信息是返回List需单独处理
+            //如果用户的信息是返回List需单独处理
+            Type rawType = mCallBack.getRawType();
             if (List.class.isAssignableFrom(Utils.getClass(rawType, 0)) || Map.class.isAssignableFrom(Utils.getClass(rawType, 0))) {
                 typeArguments = mCallBack.getType();
             } else if (CacheResult.class.isAssignableFrom(Utils.getClass(rawType, 0))) {

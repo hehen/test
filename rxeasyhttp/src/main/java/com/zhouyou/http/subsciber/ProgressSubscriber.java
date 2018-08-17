@@ -144,7 +144,7 @@ public abstract class ProgressSubscriber<T> extends BaseSubscriber<T> implements
         //int errCode = e.getCode();
         /*if (errCode == ApiException.ERROR.TIMEOUT_ERROR) {
             ToastUtil.showToast(contextWeakReference.get(), "网络中断，请检查您的网络状态");
-        } else if (errCode == ApiException.ERROR.NETWORD_ERROR) {
+        } else if (errCode == ApiException.ERROR.NETWORK_ERROR) {
             ToastUtil.showToast(contextWeakReference.get(), "请检查您的网络状态");
         } else {
             ToastUtil.showToast(contextWeakReference.get(), "error:" + e.getMessage());

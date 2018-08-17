@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.HttpManager;
 import com.zhouyou.http.callback.SimpleCallBack;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.interceptor.BaseExpiredInterceptor;
@@ -104,7 +104,7 @@ public class TokenInterceptor extends BaseExpiredInterceptor {
 
     //同步请求refreshToken
     public void refreshToken() throws IOException {
-        EasyHttp.post(ComParamContact.Token.PATH)
+        HttpManager.post(ComParamContact.Token.PATH)
                 .params(ComParamContact.Common.REFRESH_TOKEN, TokenManager.getInstance().getAuthModel().getRefreshToken())
                 .sign(false)
                 .accessToken(false)
@@ -170,7 +170,7 @@ public class TokenInterceptor extends BaseExpiredInterceptor {
         Request newRequest;
         if (method.equalsIgnoreCase("GET")) {
             String url = packageParams(newBody.build());
-            HttpLog.i("uuok.GET.Error.newUrl:" + url);
+            HttpLog.i("uuok.GET.ErrorEnum.newUrl:" + url);
             HttpUrl newHrrpIrl = request.url().newBuilder().query(url).build();
             newRequest = request.newBuilder().url(newHrrpIrl).get().build();
         } else {
@@ -300,7 +300,7 @@ public class TokenInterceptor extends BaseExpiredInterceptor {
             authModel = null;
             return;
         }
-        EasyHttp.post(ComParamContact.Login.PATH)
+        HttpManager.post(ComParamContact.Login.PATH)
                 .params(ComParamContact.Login.ACCOUNT, loginInfo.getUsername())
                 .params(ComParamContact.Login.PASSWORD, loginInfo.getPassword())
                 .sign(true)
@@ -368,7 +368,7 @@ public class TokenInterceptor extends BaseExpiredInterceptor {
         Request newRequest;
         if (method.equalsIgnoreCase("GET")) {
             String url = packageParams(newBody.build());
-            HttpLog.i("uuok.GET.Error.newUrl:" + url);
+            HttpLog.i("uuok.GET.ErrorEnum.newUrl:" + url);
             HttpUrl newHrrpIrl = request.url().newBuilder().query(url).build();
             newRequest = request.newBuilder().url(newHrrpIrl).get().build();
         } else {

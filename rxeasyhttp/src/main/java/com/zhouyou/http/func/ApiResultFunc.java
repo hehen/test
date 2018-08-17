@@ -38,10 +38,9 @@ import okhttp3.ResponseBody;
 
 
 /**
- * <p>描述：定义了ApiResult结果转换Func</p>
- * 作者： zhouyou<br>
- * 日期： 2017/3/15 16:52 <br>
- * 版本： v1.0<br>
+ * <p>描述：ResponseBody转换成ApiResult<T></p>
+ *
+ * @author Administrator
  */
 @SuppressWarnings("unchecked")
 public class ApiResultFunc<T> implements Function<ResponseBody, ApiResult<T>> {
@@ -57,10 +56,11 @@ public class ApiResultFunc<T> implements Function<ResponseBody, ApiResult<T>> {
     }
 
     @Override
-    public ApiResult<T> apply(@NonNull ResponseBody responseBody) throws Exception {
+    public ApiResult<T> apply(@NonNull ResponseBody responseBody) {
         ApiResult<T> apiResult = new ApiResult<>();
         apiResult.setCode(-1);
-        if (type instanceof ParameterizedType) {//自定义ApiResult
+        //自定义ApiResult
+        if (type instanceof ParameterizedType) {
             final Class<T> cls = (Class) ((ParameterizedType) type).getRawType();
             if (ApiResult.class.isAssignableFrom(cls)) {
                 final Type[] params = ((ParameterizedType) type).getActualTypeArguments();
@@ -72,14 +72,6 @@ public class ApiResultFunc<T> implements Function<ResponseBody, ApiResult<T>> {
                     if (!List.class.isAssignableFrom(rawType) && clazz.equals(String.class)) {
                         apiResult.setData((T) json);
                         apiResult.setCode(0);
-                       /* final Type type = Utils.getType(cls, 0);
-                        ApiResult result = gson.fromJson(json, type);
-                        if (result != null) {
-                            apiResult = result;
-                            apiResult.setData((T) json);
-                        } else {
-                            apiResult.setMsg("json is null");
-                        }*/
                     } else {
                         ApiResult result = gson.fromJson(json, type);
                         if (result != null) {
@@ -97,13 +89,12 @@ public class ApiResultFunc<T> implements Function<ResponseBody, ApiResult<T>> {
             } else {
                 apiResult.setMsg("ApiResult.class.isAssignableFrom(cls) err!!");
             }
-        } else {//默认Apiresult
+            //默认ApiResult
+        } else {
             try {
                 final String json = responseBody.string();
                 final Class<T> clazz = Utils.getClass(type, 0);
                 if (clazz.equals(String.class)) {
-                    //apiResult.setData((T) json);
-                    //apiResult.setCode(0);
                     final ApiResult result = parseApiResult(json, apiResult);
                     if (result != null) {
                         apiResult = result;
@@ -139,8 +130,9 @@ public class ApiResultFunc<T> implements Function<ResponseBody, ApiResult<T>> {
     }
 
     private ApiResult parseApiResult(String json, ApiResult apiResult) throws JSONException {
-        if (TextUtils.isEmpty(json))
+        if (TextUtils.isEmpty(json)) {
             return null;
+        }
         JSONObject jsonObject = new JSONObject(json);
         if (jsonObject.has("code")) {
             apiResult.setCode(jsonObject.getInt("code"));

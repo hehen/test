@@ -68,7 +68,7 @@ public class DownloadRequest extends BaseRequest<DownloadRequest> {
             @Override
             public ObservableSource<ResponseBody> apply(@NonNull Observable<ResponseBody> upstream) {
                 if (isSyncRequest) {
-                    return upstream;//.observeOn(AndroidSchedulers.mainThread());
+                    return upstream;
                 } else {
                     return upstream.subscribeOn(Schedulers.io())
                             .unsubscribeOn(Schedulers.io())

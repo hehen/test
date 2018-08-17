@@ -19,7 +19,9 @@ package com.zhouyou.http.request;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.HttpCacheConfig;
+import com.zhouyou.http.HttpConfig;
+import com.zhouyou.http.HttpManager;
 import com.zhouyou.http.api.ApiService;
 import com.zhouyou.http.cache.RxCache;
 import com.zhouyou.http.cache.converter.IDiskConverter;
@@ -59,43 +61,109 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
-import static com.zhouyou.http.EasyHttp.getRetrofitBuilder;
-import static com.zhouyou.http.EasyHttp.getRxCache;
+import static com.zhouyou.http.HttpManager.getRxCache;
 
 /**
  * <p>描述：所有请求的基类</p>
- * 作者： zhouyou<br>
- * 日期： 2017/4/28 17:19 <br>
- * 版本： v1.0<br>
+ *
+ * @author Administrator
  */
-@SuppressWarnings(value={"unchecked", "deprecation"})
+@SuppressWarnings(value = {"unchecked", "deprecation"})
 public abstract class BaseRequest<R extends BaseRequest> {
-    protected Cache cache = null;
-    protected CacheMode cacheMode = CacheMode.NO_CACHE;                    //默认无缓存
-    protected long cacheTime = -1;                                         //缓存时间
-    protected String cacheKey;                                             //缓存Key
-    protected IDiskConverter diskConverter;                                //设置Rxcache磁盘转换器
-    protected String baseUrl;                                              //BaseUrl
-    protected String url;                                                  //请求url
-    protected long readTimeOut;                                            //读超时
-    protected long writeTimeOut;                                           //写超时
-    protected long connectTimeout;                                         //链接超时
-    protected int retryCount;                                              //重试次数默认3次
-    protected int retryDelay;                                              //延迟xxms重试
-    protected int retryIncreaseDelay;                                      //叠加延迟
-    protected boolean isSyncRequest;                                       //是否是同步请求
-    protected List<Cookie> cookies = new ArrayList<>();                    //用户手动添加的Cookie
+    protected Cache cache;
+    /**
+     * 默认无缓存
+     */
+    protected CacheMode cacheMode;
+    /**
+     * 缓存时间
+     */
+    protected long cacheTime;
+    /**
+     * 缓存Key
+     */
+    protected String cacheKey;
+    /**
+     * 设置Rxcache磁盘转换器
+     */
+    protected IDiskConverter diskConverter;
+    /**
+     * BaseUrl
+     */
+    protected String baseUrl;
+    /**
+     * 请求url
+     */
+    protected String url;
+    /**
+     * 读超时
+     */
+    protected long readTimeOut;
+    /**
+     * 写超时
+     */
+    protected long writeTimeOut;
+    /**
+     * 链接超时
+     */
+    protected long connectTimeout;
+    /**
+     * 重试次数默认3次
+     */
+    protected int retryCount;
+    /**
+     * 延迟xxms重试
+     */
+    protected int retryDelay;
+    /**
+     * 叠加延迟
+     */
+    protected int retryIncreaseDelay;
+    /**
+     * 是否是同步请求
+     */
+    protected boolean isSyncRequest;
+    /**
+     * 用户手动添加的Cookie
+     */
+    protected List<Cookie> cookies = new ArrayList<>();
+    /**
+     * 拦截器
+     */
     protected final List<Interceptor> networkInterceptors = new ArrayList<>();
-    protected HttpHeaders headers = new HttpHeaders();                     //添加的header
-    protected HttpParams params = new HttpParams();                        //添加的param
+    /**
+     * 添加的header
+     */
+    protected HttpHeaders headers = new HttpHeaders();
+    /**
+     * 添加的param
+     */
+    protected HttpParams params = new HttpParams();
+
     protected Retrofit retrofit;
-    protected RxCache rxCache;                                             //rxcache缓存
-    protected ApiService apiManager;                                       //通用的的api接口
+    /**
+     * rxCache缓存
+     */
+    protected RxCache rxCache;
+    /**
+     * 通用的的api接口
+     */
+    protected ApiService apiManager;
+
     protected OkHttpClient okHttpClient;
     protected Context context;
-    private boolean sign = false;                                          //是否需要签名
-    private boolean timeStamp = false;                                     //是否需要追加时间戳
-    private boolean accessToken = false;                                   //是否需要追加token
+    /**
+     * 是否需要签名
+     */
+    private boolean sign = false;
+    /**
+     * 是否需要追加时间戳
+     */
+    private boolean timeStamp = false;
+    /**
+     * 是否需要追加token
+     */
+    private boolean accessToken = false;
     protected HttpUrl httpUrl;
     protected Proxy proxy;
     protected HttpsUtils.SSLParams sslParams;
@@ -107,28 +175,43 @@ public abstract class BaseRequest<R extends BaseRequest> {
 
     public BaseRequest(String url) {
         this.url = url;
-        context = EasyHttp.getContext();
-        EasyHttp config = EasyHttp.getInstance();
-        this.baseUrl = config.getBaseUrl();
-        if (!TextUtils.isEmpty(this.baseUrl))
+        context = HttpManager.getContext();
+        HttpManager config = HttpManager.getInstance();
+        HttpConfig httpConfig = HttpManager.getInstance().getHttpConfig();
+        HttpCacheConfig httpCacheConfig = HttpManager.getInstance().getHttpCacheConfig();
+        this.baseUrl = httpConfig.getBaseUrl();
+        if (!TextUtils.isEmpty(this.baseUrl)) {
             httpUrl = HttpUrl.parse(baseUrl);
-        cacheMode = config.getCacheMode();                                //添加缓存模式
-        cacheTime = config.getCacheTime();                                //缓存时间
-        retryCount = config.getRetryCount();                              //超时重试次数
-        retryDelay = config.getRetryDelay();                              //超时重试延时
-        retryIncreaseDelay = config.getRetryIncreaseDelay();              //超时重试叠加延时
+        }
+        //添加缓存模式
+        cacheMode = httpCacheConfig.getCacheMode();
+        //缓存时间
+        cacheTime = httpCacheConfig.getCacheTime();
+        //超时重试次数
+        retryCount = httpConfig.getRetryCount();
+        //超时重试延时
+        retryDelay = httpConfig.getRetryDelay();
+        //超时重试叠加延时
+        retryIncreaseDelay = httpConfig.getRetryIncreaseDelay();
         //Okhttp  cache
         cache = config.getHttpCache();
         //默认添加 Accept-Language
         String acceptLanguage = HttpHeaders.getAcceptLanguage();
-        if (!TextUtils.isEmpty(acceptLanguage))
+        if (!TextUtils.isEmpty(acceptLanguage)) {
             headers(HttpHeaders.HEAD_KEY_ACCEPT_LANGUAGE, acceptLanguage);
+        }
         //默认添加 User-Agent
         String userAgent = HttpHeaders.getUserAgent();
-        if (!TextUtils.isEmpty(userAgent)) headers(HttpHeaders.HEAD_KEY_USER_AGENT, userAgent);
+        if (!TextUtils.isEmpty(userAgent)) {
+            headers(HttpHeaders.HEAD_KEY_USER_AGENT, userAgent);
+        }
         //添加公共请求参数
-        if (config.getCommonParams() != null) params.put(config.getCommonParams());
-        if (config.getCommonHeaders() != null) headers.put(config.getCommonHeaders());
+        if (config.getCommonParams() != null) {
+            params.put(config.getCommonParams());
+        }
+        if (config.getCommonHeaders() != null) {
+            headers.put(config.getCommonHeaders());
+        }
     }
 
     public HttpParams getParams() {
@@ -166,33 +249,41 @@ public abstract class BaseRequest<R extends BaseRequest> {
     }
 
     public R cacheTime(long cacheTime) {
-        if (cacheTime <= -1) cacheTime = EasyHttp.DEFAULT_CACHE_NEVER_EXPIRE;
+        if (cacheTime <= -1) {
+            cacheTime = HttpCacheConfig.DEFAULT_CACHE_NEVER_EXPIRE;
+        }
         this.cacheTime = cacheTime;
         return (R) this;
     }
 
     public R baseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
-        if (!TextUtils.isEmpty(this.baseUrl))
+        if (!TextUtils.isEmpty(this.baseUrl)) {
             httpUrl = HttpUrl.parse(baseUrl);
+        }
         return (R) this;
     }
 
     public R retryCount(int retryCount) {
-        if (retryCount < 0) throw new IllegalArgumentException("retryCount must > 0");
+        if (retryCount < 0) {
+            throw new IllegalArgumentException("retryCount must > 0");
+        }
         this.retryCount = retryCount;
         return (R) this;
     }
 
     public R retryDelay(int retryDelay) {
-        if (retryDelay < 0) throw new IllegalArgumentException("retryDelay must > 0");
+        if (retryDelay < 0) {
+            throw new IllegalArgumentException("retryDelay must > 0");
+        }
         this.retryDelay = retryDelay;
         return (R) this;
     }
 
     public R retryIncreaseDelay(int retryIncreaseDelay) {
-        if (retryIncreaseDelay < 0)
+        if (retryIncreaseDelay < 0) {
             throw new IllegalArgumentException("retryIncreaseDelay must > 0");
+        }
         this.retryIncreaseDelay = retryIncreaseDelay;
         return (R) this;
     }
@@ -368,7 +459,7 @@ public abstract class BaseRequest<R extends BaseRequest> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        HttpLog.i("removeCache err!!!"+throwable);  
+                        HttpLog.i("removeCache err!!!" + throwable);
                     }
                 });
     }
@@ -379,7 +470,7 @@ public abstract class BaseRequest<R extends BaseRequest> {
     private OkHttpClient.Builder generateOkClient() {
         if (readTimeOut <= 0 && writeTimeOut <= 0 && connectTimeout <= 0 && sslParams == null
                 && cookies.size() == 0 && hostnameVerifier == null && proxy == null && headers.isEmpty()) {
-            OkHttpClient.Builder builder = EasyHttp.getOkHttpClientBuilder();
+            OkHttpClient.Builder builder = HttpManager.getInstance().getHttpClient().getOkHttpClientBuilder();
             for (Interceptor interceptor : builder.interceptors()) {
                 if (interceptor instanceof BaseDynamicInterceptor) {
                     ((BaseDynamicInterceptor) interceptor).sign(sign).timeStamp(timeStamp).accessToken(accessToken);
@@ -387,22 +478,32 @@ public abstract class BaseRequest<R extends BaseRequest> {
             }
             return builder;
         } else {
-            final OkHttpClient.Builder newClientBuilder = EasyHttp.getOkHttpClient().newBuilder();
-            if (readTimeOut > 0)
+            final OkHttpClient.Builder newClientBuilder = HttpManager.getInstance().getHttpClient().getOkHttpClient().newBuilder();
+            if (readTimeOut > 0) {
                 newClientBuilder.readTimeout(readTimeOut, TimeUnit.MILLISECONDS);
-            if (writeTimeOut > 0)
+            }
+            if (writeTimeOut > 0) {
                 newClientBuilder.writeTimeout(writeTimeOut, TimeUnit.MILLISECONDS);
-            if (connectTimeout > 0)
+            }
+            if (connectTimeout > 0) {
                 newClientBuilder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
-            if (hostnameVerifier != null) newClientBuilder.hostnameVerifier(hostnameVerifier);
-            if (sslParams != null)
+            }
+            if (hostnameVerifier != null) {
+                newClientBuilder.hostnameVerifier(hostnameVerifier);
+            }
+            if (sslParams != null) {
                 newClientBuilder.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
-            if (proxy != null) newClientBuilder.proxy(proxy);
-            if (cookies.size() > 0) EasyHttp.getCookieJar().addCookies(cookies);
+            }
+            if (proxy != null) {
+                newClientBuilder.proxy(proxy);
+            }
+            if (cookies.size() > 0) {
+                HttpManager.getInstance().getCookieJar().addCookies(cookies);
+            }
 
             //添加头  头添加放在最前面方便其他拦截器可能会用到
             newClientBuilder.addInterceptor(new HeadersInterceptor(headers));
-            
+
             for (Interceptor interceptor : interceptors) {
                 if (interceptor instanceof BaseDynamicInterceptor) {
                     ((BaseDynamicInterceptor) interceptor).sign(sign).timeStamp(timeStamp).accessToken(accessToken);
@@ -428,7 +529,7 @@ public abstract class BaseRequest<R extends BaseRequest> {
      */
     private Retrofit.Builder generateRetrofit() {
         if (converterFactories.isEmpty() && adapterFactories.isEmpty()) {
-            return getRetrofitBuilder().baseUrl(baseUrl);
+            return HttpManager.getInstance().getHttpClient().getRetrofitBuilder().baseUrl(baseUrl);
         } else {
             final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(baseUrl);
             if (!converterFactories.isEmpty()) {
@@ -437,7 +538,7 @@ public abstract class BaseRequest<R extends BaseRequest> {
                 }
             } else {
                 //获取全局的对象重新设置
-                Retrofit.Builder newBuilder = EasyHttp.getRetrofitBuilder();
+                Retrofit.Builder newBuilder = HttpManager.getInstance().getHttpClient().getRetrofitBuilder();
                 List<Converter.Factory> listConverterFactory = newBuilder.baseUrl(baseUrl).build().converterFactories();
                 for (Converter.Factory factory : listConverterFactory) {
                     retrofitBuilder.addConverterFactory(factory);
@@ -449,7 +550,7 @@ public abstract class BaseRequest<R extends BaseRequest> {
                 }
             } else {
                 //获取全局的对象重新设置
-                Retrofit.Builder newBuilder = EasyHttp.getRetrofitBuilder();
+                Retrofit.Builder newBuilder = HttpManager.getInstance().getHttpClient().getRetrofitBuilder();
                 List<CallAdapter.Factory> listAdapterFactory = newBuilder.baseUrl(baseUrl).build().callAdapterFactories();
                 for (CallAdapter.Factory factory : listAdapterFactory) {
                     retrofitBuilder.addCallAdapterFactory(factory);
@@ -463,28 +564,30 @@ public abstract class BaseRequest<R extends BaseRequest> {
      * 根据当前的请求参数，生成对应的RxCache和Cache
      */
     private RxCache.Builder generateRxCache() {
-        final RxCache.Builder rxCacheBuilder = EasyHttp.getRxCacheBuilder();
+        final RxCache.Builder rxCacheBuilder = HttpManager.getRxCacheBuilder();
         switch (cacheMode) {
-            case NO_CACHE://不使用缓存
-                final NoCacheInterceptor NOCACHEINTERCEPTOR = new NoCacheInterceptor();
-                interceptors.add(NOCACHEINTERCEPTOR);
-                networkInterceptors.add(NOCACHEINTERCEPTOR);
+            //不使用缓存
+            case NO_CACHE:
+                final NoCacheInterceptor nocacheinterceptor = new NoCacheInterceptor();
+                interceptors.add(nocacheinterceptor);
+                networkInterceptors.add(nocacheinterceptor);
                 break;
-            case DEFAULT://使用Okhttp的缓存
+            //使用OkHttp的缓存
+            case DEFAULT:
                 if (this.cache == null) {
-                    File cacheDirectory = EasyHttp.getCacheDirectory();
+                    File cacheDirectory = HttpManager.getInstance().getHttpCacheConfig().getCacheDirectory();
                     if (cacheDirectory == null) {
-                        cacheDirectory = new File(EasyHttp.getContext().getCacheDir(), "okhttp-cache");
+                        cacheDirectory = new File(HttpManager.getContext().getCacheDir(), "okhttp-cache");
                     } else {
                         if (cacheDirectory.isDirectory() && !cacheDirectory.exists()) {
                             cacheDirectory.mkdirs();
                         }
                     }
-                    this.cache = new Cache(cacheDirectory, Math.max(5 * 1024 * 1024, EasyHttp.getCacheMaxSize()));
+                    this.cache = new Cache(cacheDirectory, Math.max(5 * 1024 * 1024, HttpManager.getInstance().getHttpCacheConfig().getCacheMaxSize()));
                 }
                 String cacheControlValue = String.format("max-age=%d", Math.max(-1, cacheTime));
-                final CacheInterceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new CacheInterceptor(EasyHttp.getContext(), cacheControlValue);
-                final CacheInterceptorOffline REWRITE_CACHE_CONTROL_INTERCEPTOR_OFFLINE = new CacheInterceptorOffline(EasyHttp.getContext(), cacheControlValue);
+                final CacheInterceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new CacheInterceptor(HttpManager.getContext(), cacheControlValue);
+                final CacheInterceptorOffline REWRITE_CACHE_CONTROL_INTERCEPTOR_OFFLINE = new CacheInterceptorOffline(HttpManager.getContext(), cacheControlValue);
                 networkInterceptors.add(REWRITE_CACHE_CONTROL_INTERCEPTOR);
                 networkInterceptors.add(REWRITE_CACHE_CONTROL_INTERCEPTOR_OFFLINE);
                 interceptors.add(REWRITE_CACHE_CONTROL_INTERCEPTOR_OFFLINE);
@@ -497,10 +600,9 @@ public abstract class BaseRequest<R extends BaseRequest> {
             case CACHEANDREMOTEDISTINCT:
                 interceptors.add(new NoCacheInterceptor());
                 if (diskConverter == null) {
-                    final RxCache.Builder tempRxCacheBuilder = rxCacheBuilder;
-                    tempRxCacheBuilder.cachekey(Utils.checkNotNull(cacheKey, "cacheKey == null"))
+                    rxCacheBuilder.cachekey(Utils.checkNotNull(cacheKey, "cacheKey == null"))
                             .cacheTime(cacheTime);
-                    return tempRxCacheBuilder;
+                    return rxCacheBuilder;
                 } else {
                     final RxCache.Builder cacheBuilder = getRxCache().newBuilder();
                     cacheBuilder.diskConverter(diskConverter)
@@ -508,6 +610,8 @@ public abstract class BaseRequest<R extends BaseRequest> {
                             .cacheTime(cacheTime);
                     return cacheBuilder;
                 }
+            default:
+                break;
         }
         return rxCacheBuilder;
     }
@@ -515,11 +619,13 @@ public abstract class BaseRequest<R extends BaseRequest> {
     protected R build() {
         final RxCache.Builder rxCacheBuilder = generateRxCache();
         OkHttpClient.Builder okHttpClientBuilder = generateOkClient();
-        if (cacheMode == CacheMode.DEFAULT) {//okhttp缓存
+        //okHttp缓存
+        if (cacheMode == CacheMode.DEFAULT) {
             okHttpClientBuilder.cache(cache);
         }
         final Retrofit.Builder retrofitBuilder = generateRetrofit();
-        retrofitBuilder.addCallAdapterFactory(RxJava2CallAdapterFactory.create());//增加RxJava2CallAdapterFactory
+        //增加RxJava2CallAdapterFactory
+        retrofitBuilder.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
         okHttpClient = okHttpClientBuilder.build();
         retrofitBuilder.client(okHttpClient);
         retrofit = retrofitBuilder.build();
@@ -528,5 +634,9 @@ public abstract class BaseRequest<R extends BaseRequest> {
         return (R) this;
     }
 
+    /**
+     * 由子类实现
+     * @return ...
+     */
     protected abstract Observable<ResponseBody> generateRequest();
 }
